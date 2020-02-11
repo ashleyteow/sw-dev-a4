@@ -23,3 +23,9 @@ void pmap(func) {
     }
 }
 
+ - [ ] Setup testing framework
+   - [ ] Test testing framework
+ - [ ] Copy all API files into proj directory
+ - [ ] Add empty implementations to API in order to run tests
+ - [ ] Each Justin and Ashley writes 3 tests
+  

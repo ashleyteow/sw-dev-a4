@@ -21,7 +21,7 @@ class StringColumn : public Column {
 
   /** Returns the string at idx; undefined on invalid idx.*/
   String* get(size_t idx) {
-
+    return new String("");
   }
 
   /** Out of bound idx is undefined. */
@@ -30,7 +30,7 @@ class StringColumn : public Column {
   }
 
   size_t size() {
-
+    return 0;
   }
   
 };

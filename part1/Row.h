@@ -46,7 +46,7 @@ class Row : public Object {
   }
 
   size_t get_idx() {
-
+    return 0;
   }
 
  
@@ -65,7 +65,7 @@ class Row : public Object {
   }
 
   String* get_string(size_t col) {
-
+    return new String("");
   }
 
  

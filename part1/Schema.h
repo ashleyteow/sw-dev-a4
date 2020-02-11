@@ -45,37 +45,37 @@ class Schema : public Object {
   /** Return name of row at idx; nullptr indicates no name. An idx >= width
     * is undefined. */
   String* row_name(size_t idx) {
-
+    return new String("");
   }
  
   /** Return name of column at idx; nullptr indicates no name given.
     *  An idx >= width is undefined.*/
   String* col_name(size_t idx) {
-
+    return new String("");
   }
  
   /** Return type of column at idx. An idx >= width is undefined. */
   char col_type(size_t idx) {
-
+    return 'c';
   }
  
   /** Given a column name return its index, or -1. */
   int col_idx(const char* name) {
-
+    return 0;
   }
  
   /** Given a row name return its index, or -1. */
   int row_idx(const char* name) {
-
+    return 0;
   }
  
   /** The number of columns */
   size_t width() {
-
+    return 0;
   }
  
   /** The number of rows */
   size_t length() {
-
+    return 0;
   }
 };

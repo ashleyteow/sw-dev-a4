@@ -12,8 +12,9 @@ class IntColumn : public Column {
   IntColumn(int n, ...) {
 
   }
-  int get(size_t idx) {
 
+  int get(size_t idx) {
+    return 0;
   }
 
   IntColumn* as_int() {

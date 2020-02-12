@@ -1,6 +1,6 @@
 all:
 	make docker-build
-	docker run -it -v "`pwd`":/a4 a4-image bash -c "cd /a4 && make run-test"
+	docker run -c=4 -m=8G --memory-swap=-1 -it -v "`pwd`":/a4 a4-image bash -c "cd /a4 && make run-test"
 
 
 run-test:

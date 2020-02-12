@@ -1,16 +1,16 @@
 #pragma once
 #include "column.h"
 /*************************************************************************
- * IntColumn::
+ * BoolColumn::
  * Holds int values.
  */
-class IntColumn : public Column {
+class BoolColumn : public Column {
  public:
-  IntColumn() {
+  BoolColumn() {
 
   }
 
-  IntColumn(int n, ...) {
+  BoolColumn(bool n, ...) {
 
   }
 
@@ -18,7 +18,7 @@ class IntColumn : public Column {
     return 0;
   }
 
-  IntColumn* as_int() {
+  BoolColumn* as_bool() {
       
   }
 

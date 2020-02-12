@@ -1,4 +1,6 @@
-#include "Column.h"
+#pragma once
+
+#include "column.h"
 
 /*************************************************************************
  * StringColumn::

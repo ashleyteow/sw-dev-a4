@@ -1,10 +1,12 @@
+#pragma once
 #include "object.h"
 #include "string.h"
-#include "IntColumn.h"
-#include "BoolColumn.h"
-#include "FloatColumn.h"
-#include "StringColumn.h"
 
+
+class BoolColumn;
+class IntColumn;
+class FloatColumn;
+class StringColumn;
 /**
  * Column ::
  * Represents one column of a data frame which holds values of a single type.
@@ -17,19 +19,19 @@ class Column : public Object {
   /** Type converters: Return same column under its actual type, or
    *  nullptr if of the wrong type.  */
   virtual IntColumn* as_int() {
-
+    return 0;
   }
 
   virtual BoolColumn*  as_bool() {
-
+    return 0;
   }
 
   virtual FloatColumn* as_float() {
-
+    return 0;
   }
 
   virtual StringColumn* as_string() {
-
+    return 0;
   }
 
  
@@ -54,7 +56,7 @@ class Column : public Object {
  
  /** Returns the number of elements in the column. */
   virtual size_t size() {
-
+    return 0;
   }
 
  
@@ -64,3 +66,9 @@ class Column : public Object {
   }
 
 };
+
+
+#include "IntColumn.h"
+#include "BoolColumn.h"
+#include "FloatColumn.h"
+#include "StringColumn.h"

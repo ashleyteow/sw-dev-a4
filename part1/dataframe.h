@@ -1,5 +1,7 @@
-#include "Column.h"
+#pragma once
+#include "column.h"
 #include "Schema.h"
+#include "Rower.h"
 
 
 /****************************************************************************

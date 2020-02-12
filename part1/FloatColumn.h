@@ -1,16 +1,16 @@
 #pragma once
 #include "column.h"
 /*************************************************************************
- * IntColumn::
+ * FloatColumn::
  * Holds int values.
  */
-class IntColumn : public Column {
+class FloatColumn : public Column {
  public:
-  IntColumn() {
+  FloatColumn() {
 
   }
 
-  IntColumn(int n, ...) {
+  FloatColumn(float n, ...) {
 
   }
 
@@ -18,7 +18,7 @@ class IntColumn : public Column {
     return 0;
   }
 
-  IntColumn* as_int() {
+  FloatColumn* as_float() {
       
   }
 

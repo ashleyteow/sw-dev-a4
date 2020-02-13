@@ -7,38 +7,57 @@
 #define ASSERT_EXIT_ZERO(a)  \
   ASSERT_EXIT(a(), ::testing::ExitedWithCode(0), ".*")
 
-// /**
-//  * This test will check to make sure that if we mutate the scheme of an empty
-//  * dataframe that we can then append to it.
-//  */ 
-// void test1() {
-//     Schema s;
-//     DataFrame df(s);
-//     GT_EQUALS(df.get_col(new String("Cities")), -1);
-    
-//     GT_EQUALS(df.get_row(new String("0")), -1);
+/**
+ * This test will look at Contructing objects and 
+ * make sure all the constructors work properly
+ */ 
 
-//     df.get_schema().add_column('I', "Cities");
-//     df.
-    
+
+/** Constructing Columns
+ * These tests below will look at building all 
+ * different column types
+ */ 
+void test_columns_empty() {
+  IntColumn i;
+  GT_EQUALS(i.size(), 0);
+  StringColumn s;
+  GT_EQUALS(s.size(), 0);
+  FloatColumn f;
+  GT_EQUALS(f.size(), 0);
+  BoolColumn b;
+  GT_EQUALS(b.size(), 0);
+  exit(0);
+}
+
+
+void test_columns_items() {
+  IntColumn i(4, 1, 2, 3, 4);
+  GT_EQUALS(i.size(), 5);
+  GT_EQUALS(i.get(0), 0);
+  GT_EQUALS(i.get(3), 3);
+
+  String* s1 = new String("Hi");
+  String* s2 = new String("world! ");
+  String* s3 = new String("I");
+  String* s4 = new String("am");
+  String* s5 = new String("a");
+  String* s6 = new String("StringColumn");
+  StringColumn s(6, s1, s2, s3, s4, s5, s6);
+  GT_TRUE(s.get(0)->equals(s1));
+  GT_EQUALS(s.size(), 6);
+  FloatColumn f(1.2, 63.34, 8.0, 1.111, 0.00);
+  GT_TRUE(f.get(0)->equals(1.2));
+  GT_EQUALS(s.size(), 6);
   
-//     // df.get_schema().
+  GT_EQUALS(f.size(), 0);
+  BoolColumn b;
+  GT_EQUALS(b.size(), 0);
+  exit(0);
+}
 
+TEST(a4, t1){ ASSERT_EXIT_ZERO(test_columns_empty); }
 
-//   Schema s("II");
-
-//   DataFrame df(s);
-//   Row  r(df.get_schema());
-//   for(size_t i = 0; i <  1000 * 1000; i++) {
-//     r.set(0,(int)i);
-//     r.set(1,(int)i+1);
-//     df.add_row(r);
-//   }
-//   GT_EQUALS(df.get_int((size_t)0,1), 1);
-//   exit(0);
-// }
-
-// TEST(a4, t1){ ASSERT_EXIT_ZERO(test); }
+TEST(a4, t2){ ASSERT_EXIT_ZERO(test_columns_items); }
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

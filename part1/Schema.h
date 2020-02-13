@@ -27,7 +27,7 @@ class Schema : public Object {
     * undefined behavior. The argument is external, a nullptr argument is
     * undefined. **/
   Schema(const char* types) {
-
+    
   }
  
   /** Add a column of the given type and name (can be nullptr), name

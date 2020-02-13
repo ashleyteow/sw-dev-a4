@@ -17,9 +17,8 @@ run-test:
 
 
 build-local: 
-	# - rm -rf build
 	- mkdir build
-	cd build && cmake .. && make
+	(cd build && cmake .. && make) || (cd .. && rm -rf build && mkdir build && cd build && cmake .. && make)
 
 
 docker-build:

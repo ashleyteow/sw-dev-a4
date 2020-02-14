@@ -47,6 +47,7 @@ void testExample1() {
   example_df->add_column(&tax_rate, new String("Tax Rate"));
   example_df->add_column(&football_team, new String("Football Team"));
   example_df->add_column(&east_coast, new String("East Coast"));
+  GT_TRUE(example_df->get_schema().equals(new Schema("IFSB")));
 
   exit(0);
 }

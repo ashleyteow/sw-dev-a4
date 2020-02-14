@@ -77,6 +77,7 @@ class Row : public Object {
  
    /** Type of the field at the given position. An idx >= width is  undefined. */
   char col_type(size_t idx) {
+    
 
   }
  
@@ -84,7 +85,26 @@ class Row : public Object {
     * index of the row in the dataframe.
     * Calling this method before the row's fields have been set is undefined. */
   void visit(size_t idx, Fielder& f) {
-
+    f.start(idx);
+    for(int i = 0; i < this->width(); i++) {
+      switch (this->col_type(i)) {
+        case 'I':
+          f.accept(this->get_int(i));
+          break;
+        case 'F':
+          f.accept(this->get_float(i));
+          break;
+        case 'B':
+          f.accept(this->get_bool(i));
+          break;
+        case 'S':
+          f.accept(this->get_string(i));
+          break;
+        default:
+          break;
+      } 
+    }
+    f.done();
   }
  
 };

@@ -16,7 +16,7 @@ class Rower : public Object {
       call. The return value is used in filters to indicate that a row
       should be kept. */
   virtual bool accept(Row& r) {
-
+      
   }
  
   /** Once traversal of the data frame is complete the rowers that were

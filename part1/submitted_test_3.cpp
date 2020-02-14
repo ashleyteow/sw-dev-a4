@@ -17,46 +17,39 @@
  * Boston     | 0685000          | .0625        | Giants            | True
  * San Fran   | 0884000          | .0850        | 49ers             | True
  * 
- * 
- * Main things this submitted test will test for:
- * 1. Dataframe with all column types
- * 2. Copying a dataframe
- * 
- * 
- * 
  */ 
 
+
+// adding data via columns
 void testExample1() {
   IntColumn population(4, 27000000, 8600000, 350000, 20000);
   FloatColumn tax_rate(4, 0.0625, 0.0400, 0.0625, 0.0850);
+  BoolColumn east_coast(4, false, false, true, true);
   String * team1 = new String("Null");
   String * team2 = new String("Patriots");
   String * team3 = new String("Giants");
   String * team4 = new String("49ers");
   StringColumn football_team(4, team1, team2, team3, team4);
-  FloatColumn tax_rate(4, 0.0625, 0.0400, 0.0625, 0.0850);
-  BoolColumn east_coast(4, false, false, true, true);
-
-  
-  
 
   Schema * example_schema = new Schema("IFSB");
   DataFrame * example_df = new DataFrame(*example_schema);
-   
+  GT_TRUE(example_df->get_schema().equals(new Schema("IFSB")));
+
   example_df->add_column(&population, new String("Population"));
   example_df->add_column(&tax_rate, new String("Tax Rate"));
   example_df->add_column(&football_team, new String("Football Team"));
   example_df->add_column(&east_coast, new String("East Coast"));
+  GT_TRUE(example_df->ncols == 4);
+  GT_TRUE(example_df->nrows == 4);
 
   exit(0);
 }
 
 
-
-
-// TEST(a4, t1){ ASSERT_EXIT_ZERO(test); }
+TEST(a4, t1){ ASSERT_EXIT_ZERO(testExample1); }
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
+
     return RUN_ALL_TESTS();
 }

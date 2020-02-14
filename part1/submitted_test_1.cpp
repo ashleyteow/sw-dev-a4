@@ -46,7 +46,7 @@ void test_columns_items() {
   GT_TRUE(s.get(0)->equals(s1));
   GT_EQUALS(s.size(), 6);
   FloatColumn f(1.2, 63.34, 8.0, 1.111, 0.00);
-  GT_TRUE(f.get(0)->equals(1.2));
+  GT_TRUE(f.get(0) == 1.2);
   GT_EQUALS(s.size(), 6);
   
   GT_EQUALS(f.size(), 0);

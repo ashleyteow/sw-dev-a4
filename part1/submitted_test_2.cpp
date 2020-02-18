@@ -34,6 +34,60 @@ class Add2_Rower : public Rower {
   }
 };
 
+// rounds floats to the nearest whole number
+// changes birthyear to age 
+// adds 1 to each char for string columns
+class ComplicatedTaskRower : public Rower {
+  public:
+  //accept method for the rower object
+  virtual bool accept(Row& r) {
+    for(int i = 0; i < r.width(); i++) {
+      switch (r.col_type(i)) {
+        case 'I':
+          // if column is birthyear, set its value to be the user's age
+          if (i == 13) {
+            r.set(i, 2020 - r.get_int(i));
+          }
+          if (i == 0) {
+            r.set(i, r.get_int(i) / 60);
+          }
+          break;
+        case 'F':
+          // we round floats to the nearest whole number
+          int floor = static_cast<int>(r.get_float(i));
+          r.set(i, r.get_float(i) - static_cast<float>(floor) >= 0.5 ? floor + 1 : floor);
+          break;
+        case 'S':
+          for (int col = 0; col < r.get_string(i)->size(); col++) {
+            r.get_string(i)->cstr_[col] += 1;
+          }
+        break;
+        default:
+          break;
+      }      
+    }
+  }
+};
+
+// rounds the lat long's in the dataset to the nearest whole number
+class SimpleTaskRower : public Rower {
+  public:
+  //accept method for the rower object
+  virtual bool accept(Row& r) {
+    for(int i = 0; i < r.width(); i++) {
+      switch (r.col_type(i)) {
+        case 'F':
+          // we round floats to the nearest whole number
+          int floor = static_cast<int>(r.get_float(i));
+          r.set(i, r.get_float(i) - static_cast<float>(floor) >= 0.5 ? floor + 1 : floor);
+          break;
+        default:
+          break;
+      }      
+    }
+  }
+};
+
 /**
  * Test visiting an entire row, and 
  * mapping Add2 to every item in the row

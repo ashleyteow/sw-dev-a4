@@ -5,6 +5,12 @@
 #include <cstring>
 #include <iostream>
 
+// #define DEBUG
+#ifdef DEBUG
+#define  debug_printf(fmt, ...)  printf(fmt, __VA_ARGS__);
+#else
+#define debug_printf(fmt, ...)    /* Do nothing */
+#endif
 /** Helper class providing some C++ functionality and convenience
  *  functions. This class has no data, constructors, destructors or
  *  virtual functions. Inheriting from it is zero cost.

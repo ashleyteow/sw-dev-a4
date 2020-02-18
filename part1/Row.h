@@ -2,6 +2,7 @@
 #include "object.h"
 #include "Schema.h"
 #include "Fielder.h"
+#include "primitive_types_cwc.h"
 
 /*************************************************************************
  * Row::
@@ -13,72 +14,81 @@
  */
 class Row : public Object {
  public:
- 
+  Schema* scm;
+  Array* items;
+  int index;
   /** Build a row following a schema. */
   Row(Schema& scm) {
-
+    this->index = -1;
+    this->scm = new Schema(scm);
+    this->items = new Array();
+    for (int i = 0; i < this->scm->width(); i++) {
+      this->items->push(new Object());
+    }
   }
 
  
   /** Setters: set the given column with the given value. Setting a column with
     * a value of the wrong type is undefined. */
   void set(size_t col, int val) {
-
+    delete this->items->get(col);
+    this->items->set(new IntCWC(val), col);
   }
 
-  void set(size_t col, float val) {
-
+  void set(size_t col, float val) {    
+    delete this->items->get(col);
+    this->items->set(new FloatCWC(val), col);
   }
 
   void set(size_t col, bool val) {
-
+    delete this->items->get(col);
+    this->items->set(new BoolCWC(val), col);
   }
 
   /** Acquire ownership of the string. */
   void set(size_t col, String* val) {
-
+    this->items->set(val, col);
   }
 
  
   /** Set/get the index of this row (ie. its position in the dataframe. This is
    *  only used for informational purposes, unused otherwise */
   void set_idx(size_t idx) {
-
+    this->index = idx;
   }
 
   size_t get_idx() {
-    return 0;
+    return this->index;
   }
 
  
   /** Getters: get the value at the given column. If the column is not
     * of the requested type, the result is undefined. */
   int get_int(size_t col) {
-      return 0;
+      return dynamic_cast<IntCWC*>(this->items->get(col))->i;
   }
 
   bool get_bool(size_t col) {
-      return false;
+      return dynamic_cast<BoolCWC*>(this->items->get(col))->b;
   }
 
   float get_float(size_t col) {
-      return 1.0;
+      return dynamic_cast<FloatCWC*>(this->items->get(col))->f;
   }
 
   String* get_string(size_t col) {
-    return new String("");
+      return dynamic_cast<String*>(this->items->get(col));
   }
 
  
   /** Number of fields in the row. */
   size_t width() {
-      return 0;
+      return this->scm->width();
   }
  
    /** Type of the field at the given position. An idx >= width is  undefined. */
   char col_type(size_t idx) {
-    
-
+    return this->scm->col_type(idx);
   }
  
   /** Given a Fielder, visit every field of this row. The first argument is

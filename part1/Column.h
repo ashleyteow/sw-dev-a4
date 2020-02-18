@@ -1,12 +1,15 @@
 #pragma once
 #include "object.h"
 #include "string.h"
+#include "array.h"
+
 
 
 class BoolColumn;
 class IntColumn;
 class FloatColumn;
 class StringColumn;
+
 /**
  * Column ::
  * Represents one column of a data frame which holds values of a single type.
@@ -15,23 +18,29 @@ class StringColumn;
  * equality. */
 class Column : public Object {
  public:
+  char type;
+  Array* col_data;
  
   /** Type converters: Return same column under its actual type, or
    *  nullptr if of the wrong type.  */
+  // Pure Virtual
   virtual IntColumn* as_int() {
-    return 0;
+    return reinterpret_cast<IntColumn*>(this);
   }
 
+  // Pure Virtual
   virtual BoolColumn*  as_bool() {
-    return 0;
+    return reinterpret_cast<BoolColumn*>(this);
   }
 
+  // Pure Virtual
   virtual FloatColumn* as_float() {
-    return 0;
+    return reinterpret_cast<FloatColumn*>(this);
   }
 
+  // Pure Virtual
   virtual StringColumn* as_string() {
-    return 0;
+    return reinterpret_cast<StringColumn*>(this);
   }
 
  
@@ -56,13 +65,13 @@ class Column : public Object {
  
  /** Returns the number of elements in the column. */
   virtual size_t size() {
-    return 0;
+    return this->col_data->length();
   }
 
  
   /** Return the type of this column as a char: 'S', 'B', 'I' and 'F'. */
   char get_type() {
-
+    return type;
   }
 
 };

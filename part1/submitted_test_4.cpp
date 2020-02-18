@@ -7,54 +7,56 @@
 #define ASSERT_EXIT_ZERO(a)  \
   ASSERT_EXIT(a(), ::testing::ExitedWithCode(0), ".*")
 
-  /***
- * 
- *               | Grades (int) | Letter Grade (s) |       Major (s)    | Pass/Fail (b)
- * ----------    | --------------------------------------------------------------------
- * James Corden  |      97      |         A        | Computer Science       |    False
- * Marty Jane    |      85      |         B        | Computer Engineering   |    False
- * Bobbi Brown   |      92      |         A        | Biology                |    False
- * Justin Torre  |      70      |         C        | Health Science         |    False
- * Amanda Bynes  |      40      |         F        | Computer Science       |    False
- * 
+
+/***
+ * These tests will test the Rower Visitor.
  */ 
 
+/**
+ * Adds 2 to to all the items in a Row
+ */ 
+class Add2_Rower : public Rower {
+  public:
+  //accept method for the rower object
+  virtual bool accept(Row& r) {
+    for(int i = 0; i < r.width(); i++) {
+      switch (r.col_type(i)) {
+        case 'I':
+          r.set(i, (r.get_int(i) + 2));
+          break;
+        case 'F':
+          r.set(i, static_cast<float>(r.get_float(i) + 2.0));
+          break;
+        default:
+          break;
+      }      
+    }
+  }
+};
 
-// adding data via rows
-void testExample1() {
-  IntColumn * grades = new IntColumn();
-  StringColumn * letter_grades = new StringColumn();
-  StringColumn * major = new StringColumn();
-  BoolColumn * pass_fail = new BoolColumn();
-
-  Schema * ex_schema = new Schema("ISSB");
-  Row * r1 = new Row(e*x_schema);
-  r1->set(0, 97);
-
-
-
-  // FloatColumn tax_rate(4, 0.0625, 0.0400, 0.0625, 0.0850);
-  // BoolColumn east_coast(4, false, false, true, true);
-  // String * team1 = new String("Null");
-  // String * team2 = new String("Patriots");
-  // String * team3 = new String("Giants");
-  // String * team4 = new String("49ers");
-  // StringColumn football_team(4, team1, team2, team3, team4);
-
-  // Schema * example_schema = new Schema("IFSB");
-  // DataFrame * example_df = new DataFrame(*example_schema);
-  // GT_TRUE(example_df->get_schema().equals(new Schema("IFSB")));
-
-  // example_df->add_column(&population, new String("Population"));
-  // example_df->add_column(&tax_rate, new String("Tax Rate"));
-  // example_df->add_column(&football_team, new String("Football Team"));
-  // example_df->add_column(&east_coast, new String("East Coast"));
-  // GT_TRUE(example_df->ncols == 4);
-  // GT_TRUE(example_df->nrows == 4);
-
+/**
+ * Similar to test1, this test will map the Add2 rower to each row 
+ * in a df and check to see if it worked
+ */ 
+void test_map() {
+  Schema s("IIII");
+  DataFrame d(s);
+  Row r(s);
+  
+  r.set(0, 1);
+  r.set(1, 3);
+  r.set(2, 6543);
+  r.set(3, 300);
+  d.add_row(r);
+    Add2_Rower add2;
+  d.map(add2);
+  GT_EQUALS(d.get_int(0, 0), 3);
+  GT_EQUALS(d.get_int(1, 0), 5);
+  GT_EQUALS(d.get_int(3, 0), 302);
   exit(0);
 }
-TEST(a4, t1){ ASSERT_EXIT_ZERO(testExample1); }
+
+TEST(a4, t4_1){ ASSERT_EXIT_ZERO(test_map); }
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

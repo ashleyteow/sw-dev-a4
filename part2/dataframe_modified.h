@@ -4,6 +4,7 @@
 #include "Rower.h"
 #include "array.h"
 #include "object.h"
+#include <thread>
 
 
 /****************************************************************************
@@ -51,19 +52,6 @@ class DataFrame : public Object {
   DataFrame(Schema& schema) {
     this->schema = new Schema(schema);
     this->arr_col = new Array();
-    for (int i = 0; i < schema.width(); i++) {
-      char t = schema.col_type(i);
-        if (t == 'B') {
-          this->arr_col->push(new BoolColumn());
-        } else if (t == 'I') {
-          this->arr_col->push(new IntColumn());
-        } else if (t == 'F') {
-          this->arr_col->push(new FloatColumn());
-        } else if (t == 'S') {
-          this->arr_col->push(new StringColumn());
-        }
-
-    }
   }
  
   /** Returns the dataframe's schema. Modifying the schema after a dataframe
@@ -83,10 +71,7 @@ class DataFrame : public Object {
   /** Return the value at the given column and row. Accessing rows or
    *  columns out of bounds, or request the wrong type is undefined.*/
   int get_int(size_t col, size_t row) {
-    Column* c = dynamic_cast<Column*>(arr_col->get(col));
-    IntColumn* i = c->as_int();
-    int ret = i->get(row);
-    return ret;
+    return dynamic_cast<Column*>(arr_col->get(col))->as_int()->get(row);
   }
 
   bool get_bool(size_t col, size_t row) {
@@ -135,7 +120,7 @@ class DataFrame : public Object {
     * dataframe, results are undefined.
     */
   void fill_row(size_t idx, Row& row) {
-    for(int i = 0; i < this->schema->width(); i++) {
+    for(int i = 0; this->schema->width(); i++) {
       char t = row.col_type(i);
       if (t == 'B') {
         dynamic_cast<Column*>(arr_col->get(i))->as_bool()->set(idx, row.get_bool(i));
@@ -164,8 +149,7 @@ class DataFrame : public Object {
         dynamic_cast<Column*>(arr_col->get(i))->push_back(row.get_string(i));
       }
     }
-    this->schema->add_row(new String(""));
-    
+    schema->add_row(new String(""));
   }
  
   /** The number of rows in the dataframe. */
@@ -179,9 +163,13 @@ class DataFrame : public Object {
   }
  
   /** Visit rows in order */
-  void map(Rower& r) {
+  void pmap(Rower& r) {
+    std::thread* threads[this->nrows()];
+    Row* temp_rows[this->nrows()];
+
     for (int row = 0; row < this->nrows(); row++) {
       Row* temp_row = new Row(*this->schema);
+      temp_rows[row] = temp_row;
 
       // Build temp_row based on our arr_col
       for(int row_i = 0; row_i < temp_row->width(); row_i++) {
@@ -190,11 +178,8 @@ class DataFrame : public Object {
           temp_row->set(row_i, 
             dynamic_cast<Column*>(arr_col->get(row))->as_bool()->get(row_i));
         } else if (t == 'I') {
-          IntColumn* i = dynamic_cast<Column*>(arr_col->get(row_i))->as_int();
-          int set_val = i->get(row);
-
-          temp_row->set(row_i, set_val);
-            // dynamic_cast<Column*>(arr_col->get(row_i))->as_int()->get(row));
+          temp_row->set(row_i, 
+            dynamic_cast<Column*>(arr_col->get(row))->as_int()->get(row_i));
         } else if (t == 'F') {
           temp_row->set(row_i, 
             dynamic_cast<Column*>(arr_col->get(row))->as_float()->get(row_i));
@@ -203,13 +188,16 @@ class DataFrame : public Object {
             dynamic_cast<Column*>(arr_col->get(row))->as_string()->get(row_i));
         }
       }
-      r.accept(*temp_row);
-      // Since temp_row does not actually update our dataframe
-      // we have to load back in the items that were just updated via 
-      // our r.accept call
-      this->fill_row(row, *temp_row);
+      std::thread* temp_thread = new std::thread([&r, temp_row] { (&r)->accept(*temp_row); });
+      threads[row] = temp_thread;
+      
       delete temp_row;
     }
+    for(int i = 0; i < this->nrows(); i++) {
+      threads[i]->join();
+      this->fill_row(i, *temp_rows[i]);
+    }
+    
   }
  
   /** Create a new dataframe, constructed from rows for which the given Rower

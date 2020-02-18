@@ -11,6 +11,8 @@
 class StringColumn : public Column {
  public:
   StringColumn() {
+    this->type = 'S';
+    this->col_data = new Array();
 
   }
 
@@ -18,34 +20,50 @@ class StringColumn : public Column {
    * ... is a list of string pointers
    */ 
   StringColumn(int n, ...) {
+    this->col_data = new Array();
+
+    this->type = 'S';
     va_list vl;
     va_start(vl,n);
-    String* largest=va_arg(vl, String*);
-
-    for (int i=1;i<n;i++)
+    for (int i=0;i<n;i++)
     {
-      String* val=va_arg(vl,String*);
-      largest=(largest>val)?largest:val;
+      String* read_vl = va_arg(vl, String*);
+      String* s;
+      if (read_vl == nullptr) {
+        s = new String("");
+      }
+      else {
+        s = new String(read_vl->c_str());
+      }
+      // printf("%s\n", s->c_str());
+      col_data->push(s);
+
+      // printf("pushed");
     }
     va_end(vl);
   }
 
   StringColumn* as_string() {
-
+    return this;
   }
 
   /** Returns the string at idx; undefined on invalid idx.*/
   String* get(size_t idx) {
-    return new String("");
+    return dynamic_cast<String*>(this->col_data->get(idx));
   }
 
   /** Out of bound idx is undefined. */
   void set(size_t idx, String* val) {
-
+    delete dynamic_cast<String*>(this->col_data->get(idx));
+    col_data->set(val, idx);
   }
 
   size_t size() {
-    return 0;
+    return this->col_data->length();
+  }
+
+  virtual void push_back(String* val) {
+    this->col_data->push(new String(val->c_str()));
   }
   
 };

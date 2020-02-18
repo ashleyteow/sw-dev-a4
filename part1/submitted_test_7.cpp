@@ -37,18 +37,14 @@ void testExample1() {
 
   GT_EQUALS(example_df->get_col(*(new String("Author"))), 0);
 
-  
-
-
-
-
   exit(0);
 }
-TEST(a4, t1){ ASSERT_EXIT_ZERO(testExample1); }
+TEST(a4, t7_1){ ASSERT_EXIT_ZERO(testExample1); }
 
 
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
+    testExample1();
     return RUN_ALL_TESTS();
 }

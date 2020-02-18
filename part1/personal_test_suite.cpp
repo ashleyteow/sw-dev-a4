@@ -18,10 +18,11 @@ void test() {
     df.add_row(r);
   }
   GT_EQUALS(df.get_int((size_t)0,1), 1);
+  
   exit(0);
 }
 
-TEST(a4, t1){ ASSERT_EXIT_ZERO(test); }
+TEST(a4, tp_1){ ASSERT_EXIT_ZERO(test); }
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

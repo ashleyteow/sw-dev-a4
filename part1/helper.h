@@ -5,7 +5,7 @@
 #include <cstring>
 #include <iostream>
 
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define  debug_printf(fmt, ...)  printf(fmt, __VA_ARGS__);
 #else

@@ -4,7 +4,6 @@
 #include "Rower.h"
 #include "array.h"
 #include "object.h"
-#include <thread>
 
 
 /****************************************************************************
@@ -212,6 +211,7 @@ class DataFrame : public Object {
       delete temp_row;
     }
   }
+<<<<<<< HEAD
 
   void pmap_range(int start, int end, Rower& r) { 
 
@@ -283,6 +283,9 @@ class DataFrame : public Object {
       // this->fill_row(i, *temp_rows[i]);
     }
   }
+=======
+ 
+>>>>>>> 184d1d7f1d6f90d19323c3776cc51d9fba83660a
   /** Create a new dataframe, constructed from rows for which the given Rower
     * returned true from its accept method. */
   DataFrame* filter(Rower& r) {

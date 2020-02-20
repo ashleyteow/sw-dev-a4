@@ -1,5 +1,10 @@
-FROM ubuntu:18.04
+FROM ubuntu:19.10
 
-RUN apt update -y
 
-RUN apt install git cmake make g++ -y 
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install g++ valgrind cmake git curl man -y 
+
+RUN apt install time -y
+
+RUN apt-get install -y make python3

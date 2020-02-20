@@ -214,6 +214,11 @@ class DataFrame : public Object {
   }
 
   void pmap_range(int start, int end, Rower& r) { 
+
+    unsigned int start_clock = clock();
+
+    std::cout << "Start pmap_range start from " << start << ": " << clock()-start_clock << std::endl;
+
     for (int row = start; row < end; row++) {
       Row* temp_row = new Row(*this->schema);
       // temp_rows[row] = temp_row;
@@ -238,16 +243,22 @@ class DataFrame : public Object {
             dynamic_cast<Column*>(arr_col->get(col_i))->as_string()->get(row));
         }
       }
+      // if(row % 100 == 0)
+      //   printf("At row = %d\n", row);
       r.accept(*temp_row);
       this->fill_row(row, *temp_row);
       delete temp_row;
 
     }
+    std::cout << "End pmap_range start from " << start << ": " << clock()-start_clock << std::endl;
+
   }
 
   /** Visit rows in order */
   void pmap(Rower& r) {
-    const int TC = 1;
+    //End: 8235513
+    //End: 21113917
+    const int TC = 8;
     std::thread* threads[TC];
     Row* temp_rows[this->nrows()];
 
@@ -257,13 +268,12 @@ class DataFrame : public Object {
     std::cout << "Start: " << clock()-start << std::endl;
 
     for (int i = 0; i < TC; i ++) {
-      debug_printf("Starting thread: %d at t = %d\n", i, clock()-start);
-      threads[i] = new std::thread([&r, this, i] { 
-      this->pmap_range (
-        (i * this->nrows())/TC,
-        ((i + 1) * this->nrows())/TC,
-        r
-      );});
+      int s_i = (i * this->nrows())/TC;
+      int e_i = ((i + 1) * this->nrows())/TC;
+      debug_printf("Starting thread: %d at t = %d : Start = %d, End = %d\n", i, clock()-start, s_i, e_i);
+      threads[i] = new std::thread([&r, s_i, e_i, this] { 
+        this->pmap_range ( s_i, e_i, r );
+      });
     }
     
 

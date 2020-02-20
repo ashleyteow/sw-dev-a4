@@ -4,6 +4,7 @@
 #include "Rower.h"
 #include "array.h"
 #include "object.h"
+#include <thread>
 
 
 /****************************************************************************
@@ -211,7 +212,67 @@ class DataFrame : public Object {
       delete temp_row;
     }
   }
- 
+
+  void pmap_range(int start, int end, Rower& r) { 
+    for (int row = start; row < end; row++) {
+      Row* temp_row = new Row(*this->schema);
+      // temp_rows[row] = temp_row;
+
+      // Build temp_row based on our arr_col
+      for(int col_i = 0; col_i < temp_row->width(); col_i++) {
+        char t = temp_row->col_type(col_i);
+        if (t == 'B') {
+          temp_row->set(col_i, 
+            dynamic_cast<Column*>(arr_col->get(col_i))->as_bool()->get(row));
+        } else if (t == 'I') {
+          IntColumn* i = dynamic_cast<Column*>(arr_col->get(col_i))->as_int();
+          int set_val = i->get(row);
+
+          temp_row->set(col_i, set_val);
+            // dynamic_cast<Column*>(arr_col->get(row_i))->as_int()->get(row));
+        } else if (t == 'F') {
+          temp_row->set(col_i, 
+            dynamic_cast<Column*>(arr_col->get(col_i))->as_float()->get(row));
+        } else if (t == 'S') {
+          temp_row->set(col_i, 
+            dynamic_cast<Column*>(arr_col->get(col_i))->as_string()->get(row));
+        }
+      }
+      r.accept(*temp_row);
+      this->fill_row(row, *temp_row);
+      delete temp_row;
+
+    }
+  }
+
+  /** Visit rows in order */
+  void pmap(Rower& r) {
+    const int TC = 1;
+    std::thread* threads[TC];
+    Row* temp_rows[this->nrows()];
+
+    unsigned int start = clock();
+
+    // df->print();
+    std::cout << "Start: " << clock()-start << std::endl;
+
+    for (int i = 0; i < TC; i ++) {
+      debug_printf("Starting thread: %d at t = %d\n", i, clock()-start);
+      threads[i] = new std::thread([&r, this, i] { 
+      this->pmap_range (
+        (i * this->nrows())/TC,
+        ((i + 1) * this->nrows())/TC,
+        r
+      );});
+    }
+    
+
+    for(int i = 0; i < TC; i++) {
+      threads[i]->join();
+      debug_printf("Closing thread: %d at t = %d\n", i, clock()-start);
+      // this->fill_row(i, *temp_rows[i]);
+    }
+  }
   /** Create a new dataframe, constructed from rows for which the given Rower
     * returned true from its accept method. */
   DataFrame* filter(Rower& r) {

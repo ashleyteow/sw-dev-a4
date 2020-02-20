@@ -2,10 +2,11 @@
 #include "dataframe.h"
 #include "string.h"
 #include "Rower.h"
+#include <ctime> 
 #include <time.h> 
 
 
-const char* DATA_FILE = "datafile_float.txt";
+const char* DATA_FILE = "datafile.txt";
 
 // rounds floats to the nearest whole number
 // changes birthyear to age 
@@ -17,6 +18,12 @@ class ComplicatedTaskRower : public Rower {
     for(int i = 0; i < r.width(); i++) {
       switch (r.col_type(i)) {
         case 'I': {
+          for(int j = 0; j < r.get_int(i); j++) {
+            for (int k = 0; k < j; k++) {
+              // printf("%d", k);
+            }
+            // printf("%d\n", j);
+          }
           // if column is birthyear, set its value to be the user's age
           if (i == 13) {
             r.set(i, 2020 - r.get_int(i));
@@ -29,7 +36,14 @@ class ComplicatedTaskRower : public Rower {
         case 'F': {
           // we round floats to the nearest whole number
           int floor = static_cast<int>(r.get_float(i));
-          r.set(i, r.get_float(i) - static_cast<float>(floor) >= 0.5 ? floor + 1 : floor);
+          float rounded = static_cast<float>(r.get_float(i) - static_cast<float>(floor) >= 0.5 ? floor + 1 : floor);
+          // rounded = rounded * (floor % 100);
+          // for (int i = 0; i < rounded; i++) {
+          //   floor += rounded;
+          // }
+          // rounded *= floor;
+
+          r.set(i, static_cast<float>(rounded));
           break;
         }
         case 'S': {
@@ -91,7 +105,7 @@ DataFrame* create_data_frame(char* header_line, char* col_schema) {
         }
         token = strtok(NULL, ",");
         col++;
-        free(token);
+        // free(token);
     }
     return df;
 
@@ -105,10 +119,7 @@ DataFrame* create_data_frame(char* header_line, char* col_schema) {
  * User will need to delete the DataFrame after it is returned.
  */ 
 DataFrame* read_in_csv(const char* file, char* col_schema) {    
-    time_t my_time = time(NULL); 
-  
-    // ctime() used to give the present time 
-    printf("Start time = %s\n", ctime(&my_time)); 
+
 
     FILE *fp;
     debug_printf("file = %s\n",file);
@@ -124,7 +135,7 @@ DataFrame* read_in_csv(const char* file, char* col_schema) {
     debug_printf("data = %s\n",line);
     DataFrame* df = create_data_frame(line, col_schema);
 
-    df->print();
+    // df->print();
 
     //Body
     // getline(&line, &len, fp);
@@ -154,20 +165,28 @@ DataFrame* read_in_csv(const char* file, char* col_schema) {
         free(token);
     }
     fclose(fp);
-
-    printf("Done Reading time = %s\n", ctime(&my_time)); 
+    // // time_t my_time = time(NULL); 
+    // auto timenow = 
+    //   std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()); 
+  
+    // std::cout << ctime(&timenow) << std::endl; 
+    // printf("Start time = %s\n", ctime(&my_time)); 
+    unsigned int start = clock();
 
     // df->print();
-    SimpleTaskRower r;
-    df->map(r);
-    printf("Done Mapping time = %s\n", ctime(&my_time)); 
-    df->print();
-    printf("Done Printing time = %s\n", ctime(&my_time)); 
+    ComplicatedTaskRower r;
+    std::cout << "Start: " << clock()-start << std::endl;
+    df->pmap(r);
+    // std::cout << ctime(&timenow) << std::endl; 
+    std::cout << "End: " << clock()-start  << std::endl;
+    // printf("Done Mapping time = %s\n", ctime(&my_time)); 
+    // df->print();
+    // printf("Done Printing time = %s\n", ctime(&my_time)); 
 
 }
 
 
 int main () {
-    read_in_csv(DATA_FILE, "F");
+    read_in_csv(DATA_FILE, "ISSISFFISFFISII");
     return 0;
 }

@@ -4,3 +4,7 @@
 
 submit
 part1/build
+__pycache__
+datafile.txt*
+output.txt
+part1/main

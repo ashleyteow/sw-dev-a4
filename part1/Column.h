@@ -2,7 +2,7 @@
 #include "object.h"
 #include "string.h"
 #include "array.h"
-
+#include <stdarg.h> 
 
 
 class BoolColumn;

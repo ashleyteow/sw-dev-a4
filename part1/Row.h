@@ -27,6 +27,14 @@ class Row : public Object {
     }
   }
 
+  ~Row() {
+    for (int i = 0; i < this->items->length(); i++) {
+      delete this->items->get(i);
+    }
+    delete this->scm;
+    delete this->items;
+  }
+
  
   /** Setters: set the given column with the given value. Setting a column with
     * a value of the wrong type is undefined. */

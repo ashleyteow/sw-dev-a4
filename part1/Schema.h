@@ -39,6 +39,18 @@ class Schema : public Object {
     row_strings = new Array();
 
   }
+
+    /** Create an empty schema **/
+  ~Schema() {
+    for (int i = 0; i < this->width(); i++) {
+      delete header_strings->get(i);
+    }
+    for (int i = 0; i < this->length(); i++) {
+      delete row_strings->get(i);
+    }
+    delete header_strings;
+    delete row_strings;
+  }
  
   /** Create a schema from a string of types. A string that contains
     * characters other than those identifying the four type results in

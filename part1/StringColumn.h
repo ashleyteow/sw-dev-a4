@@ -54,8 +54,9 @@ class StringColumn : public Column {
 
   /** Out of bound idx is undefined. */
   void set(size_t idx, String* val) {
+    String* temp = new String(val->c_str());
     delete dynamic_cast<String*>(this->col_data->get(idx));
-    col_data->set(val, idx);
+    col_data->set(temp, idx);
   }
 
   size_t size() {

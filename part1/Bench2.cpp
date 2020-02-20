@@ -114,9 +114,11 @@ DataFrame* read_in_csv(char* file, char* col_schema) {
     // debug_printf(" = \n",line);
 
     getline(&line, &len, fp);
-        debug_printf("data = %s\n",line);
+    debug_printf("data = %s\n",line);
 
-    // DataFrame* df = create_data_frame(line, col_schema);
+    DataFrame* df = create_data_frame(line, col_schema);
+
+    df->print();
 
     // while (line != NULL) {
     //     Row temp_row(df->get_schema());

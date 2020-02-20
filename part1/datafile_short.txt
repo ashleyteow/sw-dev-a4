@@ -1,0 +1,3 @@
+ tripduration , starttime , stoptime , start station id , start station name , start station latitude , start station longitude , end station id , end station name , end station latitude , end station longitude , bikeid , usertype , birth year , gender 
+ 488 , 2015-07-01 00:02:59 , 2015-07-01 00:11:07 , 49 , Stuart St. at Charles St. , 42.351146 , -71.066289 , 13 , Boston Medical Center -  East Concord at Harrison Ave , 42.336437 , -71.073089 , 609 , Subscriber , 1994 , 2 
+ 242 , 2015-07-01 00:01:30 , 2015-07-01 00:05:33 , 141 , Kendall Street , 42.363560158429884 , -71.08216792345047 , 90 , Lechmere Station at Cambridge St / First St , 42.370677 , -71.076529 , 724 , Customer , 1983 , 1 

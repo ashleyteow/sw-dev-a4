@@ -2,9 +2,10 @@
 #include "dataframe.h"
 #include "string.h"
 #include "Rower.h"
+#include <time.h> 
 
 
-const char* DATA_FILE = "datafile.txt";
+const char* DATA_FILE = "datafile_float.txt";
 
 // rounds floats to the nearest whole number
 // changes birthyear to age 
@@ -54,7 +55,7 @@ class SimpleTaskRower : public Rower {
         case 'F': {
           // we round floats to the nearest whole number
           int floor = static_cast<int>(r.get_float(i));
-          r.set(i, r.get_float(i) - static_cast<float>(floor) >= 0.5 ? floor + 1 : floor);
+          r.set(i, static_cast<float>(r.get_float(i) - static_cast<float>(floor) >= 0.5 ? floor + 1 : floor));
           break;
         }
         default:
@@ -64,6 +65,38 @@ class SimpleTaskRower : public Rower {
   }
 };
 
+/**
+ * Generates a data frame based on a header_line in csv format and a column schema
+ */ 
+DataFrame* create_data_frame(char* header_line, char* col_schema) {
+    Schema s("");
+    DataFrame* df = new DataFrame(s);
+
+    char *token;
+    int col = 0;
+    /* get the first token */
+    token = strtok(header_line, ",");
+    
+    /* walk through other tokens */
+    while( token != NULL ) {
+        char curr_t = col_schema[col];
+        if (curr_t == 'I') {
+            df->add_column(new IntColumn(), new String(token));
+        } else if (curr_t == 'B') {
+            df->add_column(new BoolColumn(), new String(token));
+        } else if (curr_t == 'F') {
+            df->add_column(new FloatColumn(), new String(token));
+        } else if (curr_t == 'S') {
+            df->add_column(new StringColumn(), new String(token));
+        }
+        token = strtok(NULL, ",");
+        col++;
+        free(token);
+    }
+    return df;
+
+
+}
 
 /**
  * reads in a CSV based on a column schema and generates a 
@@ -71,8 +104,14 @@ class SimpleTaskRower : public Rower {
  * 
  * User will need to delete the DataFrame after it is returned.
  */ 
-DataFrame* read_in_csv(char* file, char* col_schema) {
+DataFrame* read_in_csv(const char* file, char* col_schema) {    
+    time_t my_time = time(NULL); 
+  
+    // ctime() used to give the present time 
+    printf("Start time = %s\n", ctime(&my_time)); 
+
     FILE *fp;
+    debug_printf("file = %s\n",file);
     fp = fopen(file, "r");
     if (fp == NULL) {
         printf("Wrong file");
@@ -80,30 +119,55 @@ DataFrame* read_in_csv(char* file, char* col_schema) {
     }
     size_t len;
     char* line;
+    //Header
     getline(&line, &len, fp);
-    char *token;
-    
-    /* get the first token */
-    token = strtok(line, ",");
-    
-    /* walk through other tokens */
-    while( token != NULL ) {
-        printf( " %s\n", token );
-        token = strtok(NULL, ",");
+    debug_printf("data = %s\n",line);
+    DataFrame* df = create_data_frame(line, col_schema);
+
+    df->print();
+
+    //Body
+    // getline(&line, &len, fp);
+
+    int line_count = 0;
+    while (line != NULL && getline(&line, &len, fp) != EOF) {
+        Row temp_row(df->get_schema());
+        char* token = strtok(line, ",");
+        int i= 0;
+        while( token != NULL ) {
+            if (col_schema[i] == 'I') {
+                temp_row.set(i, atoi(token));
+            } else if (col_schema[i] == 'F') {
+                temp_row.set(i, static_cast<float>(atof(token)));
+            } else if (col_schema[i] == 'S') {
+                temp_row.set(i, new String(token));
+            } else if (col_schema[i] == 'B') {
+                temp_row.set(i, atoi(token) > 0);
+            }
+            token = strtok(NULL, ",");
+            i++;
+        }
+        df->add_row(temp_row);
+        if (++line_count % 100 == 0) {
+          printf("Reading in line #%d\n", line_count);
+        }
+        free(token);
     }
-
-
-    // fscanf(fp, "%s", ret);
-    // printf(ret);
-
-    // fprintf(fp, "This is testing for fprintf...\n");
-    // fputs("This is testing for fputs...\n", fp);
     fclose(fp);
-    return 0;
+
+    printf("Done Reading time = %s\n", ctime(&my_time)); 
+
+    // df->print();
+    SimpleTaskRower r;
+    df->map(r);
+    printf("Done Mapping time = %s\n", ctime(&my_time)); 
+    df->print();
+    printf("Done Printing time = %s\n", ctime(&my_time)); 
 
 }
 
 
 int main () {
-    read_in_csv("datafile.txt", "ISSISFFISFFISII");
+    read_in_csv(DATA_FILE, "F");
+    return 0;
 }

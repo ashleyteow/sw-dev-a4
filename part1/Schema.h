@@ -17,6 +17,8 @@ class Schema : public Object {
   Array* row_strings;
   char* types;
 
+  int len;
+
 
   /** Copying constructor */
   Schema(Schema& from) {
@@ -26,33 +28,22 @@ class Schema : public Object {
     for (int i = 0; i < strlen(types); i++) {
       header_strings->push(new String(from.header_strings->get(i)->c_str()));
     }
-    for (int i = 0; i < from.length(); i++) {
-      row_strings->push(new String(from.row_strings->get(i)->c_str()));
-    }
+    this->len = from.len;
 
-
+    // for (int i = 0; i < from.length(); i++) {
+    //   row_strings->push(new String(from.row_strings->get(i)->c_str()));
+    // }
   }
  
   /** Create an empty schema **/
   Schema() {
     header_strings = new Array();
     row_strings = new Array();
+    this->len = 0;
 
   }
 
-    /** Create an empty schema **/
-  ~Schema() {
-    for (int i = 0; i < this->width(); i++) {
-      delete header_strings->get(i);
-    }
-    for (int i = 0; i < this->length(); i++) {
-      delete row_strings->get(i);
-    }
-    delete header_strings;
-    delete row_strings;
-  }
- 
-  /** Create a schema from a string of types. A string that contains
+    /** Create a schema from a string of types. A string that contains
     * characters other than those identifying the four type results in
     * undefined behavior. The argument is external, a nullptr argument is
     * undefined. **/
@@ -63,8 +54,24 @@ class Schema : public Object {
     for (int i = 0; i < strlen(types); i++) {
       header_strings->push(new String(""));
     }
+        this->len = 0;
+
     
   }
+
+    /** Create an empty schema **/
+  ~Schema() {
+    for (int i = 0; i < this->width(); i++) {
+      delete header_strings->get(i);
+    }
+    for (int i = 0; i < this->row_strings->length(); i++) {
+      delete row_strings->get(i);
+    }
+    delete header_strings;
+    delete row_strings;
+  }
+ 
+
  
   /** Add a column of the given type and name (can be nullptr), name
     * is external. Names are expectd to be unique, duplicates result
@@ -77,7 +84,9 @@ class Schema : public Object {
   /** Add a row with a name (possibly nullptr), name is external.  Names are
    *  expectd to be unique, duplicates result in undefined behavior. */
   void add_row(String* name) {
-    this->row_strings->push(name);
+    this->len++;
+    delete name;
+    // this->row_strings->push(name);
 
   }
  
@@ -133,6 +142,7 @@ class Schema : public Object {
  
   /** The number of rows */
   size_t length() {
-    return this->row_strings->length();
+    return this->len;
+    // return this->row_strings->length();
   }
 };

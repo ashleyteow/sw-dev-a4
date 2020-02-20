@@ -148,7 +148,7 @@ DataFrame* read_in_csv(const char* file, char* col_schema) {
             i++;
         }
         df->add_row(temp_row);
-        if (++line_count % 100 == 0) {
+        if (++line_count % 10000 == 0) {
           printf("Reading in line #%d\n", line_count);
         }
         free(token);

@@ -8,3 +8,5 @@ __pycache__
 datafile.txt*
 output.txt
 part1/main
+
+bin

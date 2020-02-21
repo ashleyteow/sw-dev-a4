@@ -10,3 +10,5 @@ output.txt
 part1/main
 
 bin
+
+*.dSYM

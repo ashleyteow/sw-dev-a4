@@ -18,7 +18,7 @@ run:
 	./$(OUT_DIR)/test_payload
 	./$(OUT_DIR)/test_send_and_receive
 	./$(OUT_DIR)/test_multiple_clients
-	./$(OUT_DIR)/test_get_client_list
+	#./$(OUT_DIR)/test_get_client_list
 	echo "All tests PASSED"
 
 clean:

@@ -22,7 +22,7 @@ int main() {
     c.send_message_to_master(p, false);
 
     // Wait for server to get the message
-    std::this_thread::sleep_for (std::chrono::seconds(1));
+    std::this_thread::sleep_for (std::chrono::seconds(10));
     
     ClientID c_id_temp("127.0.0.1");
     // Test Packet was received properly
